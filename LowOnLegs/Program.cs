@@ -1,4 +1,8 @@
 
+using LowOnLegs.Data;
+using LowOnLegs.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace LowOnLegs
 {
     public class Program
@@ -12,7 +16,9 @@ namespace LowOnLegs
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddSingleton<MatchStateManager>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,6 +33,8 @@ namespace LowOnLegs
 
 
             app.MapControllers();
+
+
 
             app.Run();
         }

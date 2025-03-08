@@ -1,0 +1,118 @@
+﻿using LowOnLegs.Core.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LowOnLegs.Data
+{
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext()
+        {
+        }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+        {
+        }
+
+        public DbSet<Player> Players { get; set; }
+        public DbSet<Match> Matches { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Konfiguracja tabeli Player
+            modelBuilder.Entity<Player>(entity =>
+            {
+                entity.HasKey(e => e.PlayerId);
+
+                entity.Property(e => e.Name).IsRequired();
+                entity.Property(e => e.Surname).IsRequired();
+                entity.Property(e => e.Nickname).IsRequired();
+                entity.Property(e => e.Email).IsRequired(false);
+                entity.Property(e => e.CreatedAt).IsRequired(false);
+                entity.Property(e => e.UpdatedAt).IsRequired(false);
+            });
+
+            // Konfiguracja tabeli Match
+            modelBuilder.Entity<Match>(entity =>
+            {
+                entity.HasKey(e => e.MatchId);
+
+                entity.Property(e => e.StartTime).IsRequired();
+                entity.Property(e => e.IsFinished).IsRequired();
+                entity.Property(e => e.CreatedAt).IsRequired();
+                entity.Property(e => e.UpdatedAt).IsRequired();
+
+                // Relacja Match -> Player1 (wiele do jednego)
+                entity.HasOne(m => m.Player1)
+                      .WithMany(p => p.Matches)
+                      .HasForeignKey(m => m.Player1Id)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Relacja Match -> Player2 (wiele do jednego)
+                entity.HasOne(m => m.Player2)
+                      .WithMany()
+                      .HasForeignKey(m => m.Player2Id)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Relacja Match -> Winner (wiele do jednego)
+                entity.HasOne(m => m.Winner)
+                      .WithMany(p => p.MatchesWon)
+                      .HasForeignKey(m => m.WinnerId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Player>().HasData(
+        new Player
+        {
+            PlayerId = 1,
+            Name = "Piotr",
+            Surname = "Klimkowski",
+            Nickname = "Klimko",
+        },
+        new Player
+        {
+            PlayerId = 2,
+            Name = "Igor",
+            Surname = "Gresista",
+            Nickname = "Igorakowiec",
+        },
+        new Player
+        {
+            PlayerId = 3,
+            Name = "Jakub",
+            Surname = "Stadniczuk",
+            Nickname = "Kuba",
+        },
+        new Player
+        {
+            PlayerId = 4,
+            Name = "Dawid",
+            Surname = "Posała",
+            Nickname = "Braciak",
+        },
+        new Player
+        {
+            PlayerId = 5,
+            Name = "Michał",
+            Surname = "Gliwa",
+            Nickname = "Gliwa",
+        },
+        new Player
+        {
+            PlayerId = 6,
+            Name = "Adam",
+            Surname = "Wybraniec",
+            Nickname = "Fred",
+        }
+    );
+
+        }
+    }
+}
