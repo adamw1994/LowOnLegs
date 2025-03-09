@@ -45,6 +45,8 @@ namespace LowOnLegs.Services
             var matchStateDto = matchStateManager.GetCurrentMatch();
             matchStateDto.Player1Score = 0;
             matchStateDto.Player2Score = 0;
+            matchStateDto.FirstServer = null;
+            matchStateDto.CurrentServer = null;
             return matchStateManager.SetMatchState(matchStateDto);
         }
 
@@ -67,6 +69,15 @@ namespace LowOnLegs.Services
             return matchStateManager.SetMatchState(matchStateDto);
         }
 
+        public MatchStateDto SubtractPoint(PlayerEnum player)
+        {
+            var matchStateDto = matchStateManager.GetCurrentMatch();
+
+            DecreasePlayerScore(player, matchStateDto);
+
+            return matchStateManager.SetMatchState(matchStateDto);
+        }
+
         private static void IncreasePlayerScore(PlayerEnum player, MatchStateDto matchStateDto)
         {
             switch (player)
@@ -85,6 +96,39 @@ namespace LowOnLegs.Services
             {
                 SwitchCurrentServer(matchStateDto);
             }
+        }
+
+        private static void DecreasePlayerScore(PlayerEnum player, MatchStateDto matchStateDto)
+        {
+            switch (player)
+            {
+                case PlayerEnum.Player1:
+                    if (matchStateDto.Player1Score > 0)
+                    {
+                        matchStateDto.Player1Score--;
+                        if ((matchStateDto.Player1Score + matchStateDto.Player2Score) % 2 == 1)
+                        {
+                            SwitchCurrentServer(matchStateDto);
+                        }
+                    }
+
+                    break;
+                case PlayerEnum.Player2:
+                    if (matchStateDto.Player2Score > 0)
+                    {
+                        matchStateDto.Player2Score--;
+                        if ((matchStateDto.Player1Score + matchStateDto.Player2Score) % 2 == 0)
+                        {
+                            SwitchCurrentServer(matchStateDto);
+                        }
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+
+
         }
 
         public MatchStateDto SetPlayer1(PlayerDto player)

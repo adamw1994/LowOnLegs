@@ -49,9 +49,19 @@ namespace LowOnLegs.API.Controllers
         public async Task<IActionResult> AddPointPlayer1()
         {
             var matchStateDto = _matchService.AddPoint(PlayerEnum.Player1);
-            await _hub.Clients.All.SendAsync("UpdateScore", new
-            { player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
-            );
+            //await _hub.Clients.All.SendAsync("UpdateScore", new
+            //{ player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
+            //);
+            return await Task.FromResult(new JsonResult(matchStateDto));
+        }
+
+        [HttpPost("subtract-point-player1")]
+        public async Task<IActionResult> SubtractPointPlayer1()
+        {
+            var matchStateDto = _matchService.SubtractPoint(PlayerEnum.Player1);
+            //await _hub.Clients.All.SendAsync("UpdateScore", new
+            //{ player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
+            //);
             return await Task.FromResult(new JsonResult(matchStateDto));
         }
 
@@ -59,9 +69,19 @@ namespace LowOnLegs.API.Controllers
         public async Task<IActionResult> AddPointPlayer2()
         {
             var matchStateDto = _matchService.AddPoint(PlayerEnum.Player2);
-            await _hub.Clients.All.SendAsync("UpdateScore", new
-            { player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
-            );
+            //await _hub.Clients.All.SendAsync("UpdateScore", new
+            //{ player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
+            //);
+            return await Task.FromResult(new JsonResult(matchStateDto));
+        }
+
+        [HttpPost("subtract-point-player2")]
+        public async Task<IActionResult> SubtractPointPlayer2()
+        {
+            var matchStateDto = _matchService.SubtractPoint(PlayerEnum.Player2);
+            //await _hub.Clients.All.SendAsync("UpdateScore", new
+            //{ player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
+            //);
             return await Task.FromResult(new JsonResult(matchStateDto));
         }
 
