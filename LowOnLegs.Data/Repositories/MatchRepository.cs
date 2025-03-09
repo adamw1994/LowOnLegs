@@ -1,22 +1,23 @@
 ﻿using LowOnLegs.Core.DTOs;
 using LowOnLegs.Core.Models;
 using LowOnLegs.Data.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LowOnLegs.Data.Repositories
 {
-    class MatchRepository: IMatchRepository
+    public class MatchRepository : IMatchRepository
     {
-        async public Task<bool> Add(Match match)
+        private readonly ApplicationDbContext _context;
+
+        public MatchRepository(ApplicationDbContext context) // 🔹 Wstrzykujemy kontekst przez konstruktor
         {
-            using (var context = new ApplicationDbContext())
-            {
-                await context.Matches.AddAsync(match);
-            }
+            _context = context;
+        }
+
+        public async Task<bool> Add(Match match)
+        {
+            await _context.Matches.AddAsync(match);
+            await _context.SaveChangesAsync(); // 🔹 Zapisujemy zmiany
             return true;
         }
     }

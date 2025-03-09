@@ -15,26 +15,19 @@ namespace LowOnLegs.Services
         private MatchState? _currentMatch;
         private readonly object _lockObject = new object();
 
+        public MatchStateDto GetMatchState() => new MatchStateDto(_currentMatch);
+
         public MatchStateDto StartMatch(PlayerDto? player1, PlayerDto? player2)
         {
             lock (_lockObject)
             {
-                _currentMatch = new MatchState
-                {
-                    StartTime = DateTime.UtcNow,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    Player1Score = 0,
-                    Player2Score = 0,
-                    Player1 = player1,
-                    Player2 = player2,
-                };
+                _currentMatch = new MatchState(player1, player2);
 
                 return new MatchStateDto(_currentMatch);
             }
         }
 
-        public MatchStateDto AddPoint(PlayerEnum player)
+        public MatchStateDto SetMatchState(MatchStateDto dto)
         {
             lock (_lockObject)
             {
@@ -42,17 +35,7 @@ namespace LowOnLegs.Services
                 {
                     throw new Exception("No match is currently in progress");
                 }
-
-                if (player == PlayerEnum.Player1)
-                {
-                    _currentMatch.Player1Score++;
-                }
-                else if (player == PlayerEnum.Player2)
-                {
-                    _currentMatch.Player2Score++;
-                }
-
-                _currentMatch.UpdatedAt = DateTime.UtcNow;
+                SetMatchStateFromDto(dto);
 
                 return new MatchStateDto(_currentMatch);
             }
@@ -71,32 +54,17 @@ namespace LowOnLegs.Services
             }
         }
 
-        public MatchStateDto SetPlayer1(PlayerDto player)
+        private void SetMatchStateFromDto(MatchStateDto dto)
         {
-            lock (_lockObject)
-            {
-                if (_currentMatch is null)
-                {
-                    throw new Exception("No match is currently in progress");
-                }
-                
-                _currentMatch.Player1 = player;
-                return new MatchStateDto(_currentMatch);
-            }
-        }
-
-        public MatchStateDto SetPlayer2(PlayerDto player)
-        {
-            lock (_lockObject)
-            {
-                if (_currentMatch is null)
-                {
-                    throw new Exception("No match is currently in progress");
-                }
-
-                _currentMatch.Player2 = player;
-                return new MatchStateDto(_currentMatch);
-            }
+            _currentMatch.FirstServer = dto.FirstServer;
+            _currentMatch.CurrentServer = dto.CurrentServer;
+            _currentMatch.Player1Score = dto.Player1Score;
+            _currentMatch.Player2Score = dto.Player2Score;
+            _currentMatch.Player1 = dto.Player1;
+            _currentMatch.Player2 = dto.Player2;
+            _currentMatch.StartTime = dto.StartTime;
+            _currentMatch.CreatedAt = dto.CreatedAt;
+            _currentMatch.UpdatedAt = dto.UpdatedAt;
         }
     }
 

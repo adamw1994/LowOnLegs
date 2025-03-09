@@ -1,4 +1,5 @@
-﻿using LowOnLegs.Core.Models;
+﻿using LowOnLegs.Core.Enums;
+using LowOnLegs.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,8 @@ namespace LowOnLegs.Core.DTOs
         public int? WinnerId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
         public bool SaveMatchToDatabase { get; set; }
+        public PlayerEnum? FirstServer { get; set; }
 
         public Match ToEntity()
         {

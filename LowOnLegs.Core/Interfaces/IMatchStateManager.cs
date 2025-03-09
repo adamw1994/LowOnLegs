@@ -10,10 +10,10 @@ namespace LowOnLegs.Core.Interfaces
 {
     public interface IMatchStateManager
     {
-        MatchStateDto AddPoint(PlayerEnum player);
         MatchStateDto GetCurrentMatch();
         MatchStateDto StartMatch(PlayerDto? player1 = null, PlayerDto? player2 = null);
-        public MatchStateDto SetPlayer1(PlayerDto player);
-        public MatchStateDto SetPlayer2(PlayerDto player);
+        public MatchStateDto SetMatchState(MatchStateDto dto);
+
+        public MatchStateDto GetMatchState();
     }
 }

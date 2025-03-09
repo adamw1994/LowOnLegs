@@ -1,8 +1,10 @@
-﻿using LowOnLegs.Core.Models;
+﻿using LowOnLegs.Core.Enums;
+using LowOnLegs.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace LowOnLegs.Core.DTOs
@@ -18,6 +20,11 @@ namespace LowOnLegs.Core.DTOs
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
+        public PlayerEnum? FirstServer { get; set; }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public PlayerEnum? CurrentServer { get; set; }
+
         public MatchStateDto(MatchState matchState)
         {
             MatchId = matchState.MatchId;
@@ -28,6 +35,8 @@ namespace LowOnLegs.Core.DTOs
             StartTime = matchState.StartTime;
             CreatedAt = matchState.CreatedAt;
             UpdatedAt = matchState.UpdatedAt;
+            FirstServer = matchState.FirstServer;
+            CurrentServer = matchState.CurrentServer;
         }
 
         public MatchDto ToMatchDto(MatchStateDto matchStateDto)
@@ -44,7 +53,8 @@ namespace LowOnLegs.Core.DTOs
                 UpdatedAt = matchStateDto.UpdatedAt,
                 EndTime = DateTime.Now,
                 IsFinished = true,
-                SaveMatchToDatabase = matchStateDto.Player1 is not null && matchStateDto.Player2 is not null
+                SaveMatchToDatabase = matchStateDto.Player1 is not null && matchStateDto.Player2 is not null,
+                FirstServer = matchStateDto.FirstServer,
             };
 
             if (!matchDto.SaveMatchToDatabase)

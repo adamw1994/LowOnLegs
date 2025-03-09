@@ -10,10 +10,6 @@ namespace LowOnLegs.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext()
-        {
-        }
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
         {
@@ -75,6 +71,7 @@ namespace LowOnLegs.Data
             Name = "Piotr",
             Surname = "Klimkowski",
             Nickname = "Klimko",
+            ImagePath = "assets/images/klimko.png",
         },
         new Player
         {
@@ -82,6 +79,7 @@ namespace LowOnLegs.Data
             Name = "Igor",
             Surname = "Gresista",
             Nickname = "Igorakowiec",
+            ImagePath = "assets/images/igor.png",
         },
         new Player
         {
@@ -89,6 +87,7 @@ namespace LowOnLegs.Data
             Name = "Jakub",
             Surname = "Stadniczuk",
             Nickname = "Kuba",
+            ImagePath = "assets/images/kuba.png",
         },
         new Player
         {
@@ -96,6 +95,7 @@ namespace LowOnLegs.Data
             Name = "Dawid",
             Surname = "Posała",
             Nickname = "Braciak",
+            ImagePath = "assets/images/braciak.png",
         },
         new Player
         {
@@ -103,6 +103,7 @@ namespace LowOnLegs.Data
             Name = "Michał",
             Surname = "Gliwa",
             Nickname = "Gliwa",
+            ImagePath = "assets/images/gliwa.png",
         },
         new Player
         {
@@ -110,6 +111,7 @@ namespace LowOnLegs.Data
             Name = "Adam",
             Surname = "Wybraniec",
             Nickname = "Fred",
+            ImagePath = "assets/images/fred.png",
         }
     );
 

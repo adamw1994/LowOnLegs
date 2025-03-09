@@ -3,6 +3,7 @@ using System;
 using LowOnLegs.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LowOnLegs.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250308215558_AddPlayerPhoto")]
+    partial class AddPlayerPhoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -108,7 +111,6 @@ namespace LowOnLegs.Data.Migrations
                         new
                         {
                             PlayerId = 1,
-                            ImagePath = "assets/images/klimko.png",
                             Name = "Piotr",
                             Nickname = "Klimko",
                             Surname = "Klimkowski"
@@ -116,7 +118,6 @@ namespace LowOnLegs.Data.Migrations
                         new
                         {
                             PlayerId = 2,
-                            ImagePath = "assets/images/igor.png",
                             Name = "Igor",
                             Nickname = "Igorakowiec",
                             Surname = "Gresista"
@@ -124,7 +125,6 @@ namespace LowOnLegs.Data.Migrations
                         new
                         {
                             PlayerId = 3,
-                            ImagePath = "assets/images/kuba.png",
                             Name = "Jakub",
                             Nickname = "Kuba",
                             Surname = "Stadniczuk"
@@ -132,7 +132,6 @@ namespace LowOnLegs.Data.Migrations
                         new
                         {
                             PlayerId = 4,
-                            ImagePath = "assets/images/braciak.png",
                             Name = "Dawid",
                             Nickname = "Braciak",
                             Surname = "Posała"
@@ -140,7 +139,6 @@ namespace LowOnLegs.Data.Migrations
                         new
                         {
                             PlayerId = 5,
-                            ImagePath = "assets/images/gliwa.png",
                             Name = "Michał",
                             Nickname = "Gliwa",
                             Surname = "Gliwa"
@@ -148,7 +146,6 @@ namespace LowOnLegs.Data.Migrations
                         new
                         {
                             PlayerId = 6,
-                            ImagePath = "assets/images/fred.png",
                             Name = "Adam",
                             Nickname = "Fred",
                             Surname = "Wybraniec"

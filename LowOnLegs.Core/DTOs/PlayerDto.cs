@@ -13,6 +13,7 @@ namespace LowOnLegs.Core.DTOs
         public string? Name { get; set; }
         public string? Surname { get; set; }
         public string? Nickname { get; set; }
+        public string? ImagePath { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public DateTime? DateOfBirth { get; set; }
@@ -30,6 +31,7 @@ namespace LowOnLegs.Core.DTOs
             DateOfBirth = player.DateOfBirth;
             CreatedAt = player.CreatedAt;
             UpdatedAt = player.UpdatedAt;
+            ImagePath = player.ImagePath;
         }
     }
 }
