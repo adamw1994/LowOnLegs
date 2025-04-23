@@ -23,9 +23,9 @@ namespace LowOnLegs.Services
             this.matchStateManager = matchStateManager;
         }
 
-        public MatchStateDto StartMatch(PlayerDto? player1 = null, PlayerDto? player2 = null)
+        public MatchStateDto StartMatch(PlayerDto? leftPlayer = null, PlayerDto? rightPlayer = null)
         {
-            return matchStateManager.StartMatch(player1, player2);
+            return matchStateManager.StartMatch(leftPlayer, rightPlayer);
         }
 
         public MatchStateDto FinishMatch()
@@ -37,14 +37,14 @@ namespace LowOnLegs.Services
             {
                 matchRepository.Add(matchDto.ToEntity());
             }
-            return matchStateManager.StartMatch(matchStateDto.Player1, matchStateDto.Player2);
+            return matchStateManager.StartMatch(matchStateDto.LeftPlayer, matchStateDto.RightPlayer);
         }
 
         public MatchStateDto ResetMatch()
         {
             var matchStateDto = matchStateManager.GetCurrentMatch();
-            matchStateDto.Player1Score = 0;
-            matchStateDto.Player2Score = 0;
+            matchStateDto.LeftPlayerScore = 0;
+            matchStateDto.RightPlayerScore = 0;
             matchStateDto.FirstServer = null;
             matchStateDto.CurrentServer = null;
             return matchStateManager.SetMatchState(matchStateDto);
@@ -54,12 +54,9 @@ namespace LowOnLegs.Services
         {
             var matchStateDto = matchStateManager.GetCurrentMatch();
 
-            if (matchStateDto.Player1Score == 0
-                    && matchStateDto.Player2Score == 0 && matchStateDto.FirstServer == null)
+            if (IsFightForServe(matchStateDto))
             {
-                matchStateDto.FirstServer = player;
-                matchStateDto.CurrentServer = player;
-                matchStateDto.UpdatedAt = DateTime.UtcNow;
+                InitializeFirstServer(matchStateDto, player);
             }
             else
             {
@@ -78,76 +75,98 @@ namespace LowOnLegs.Services
             return matchStateManager.SetMatchState(matchStateDto);
         }
 
-        private static void IncreasePlayerScore(PlayerEnum player, MatchStateDto matchStateDto)
+        private void IncreasePlayerScore(PlayerEnum player, MatchStateDto matchStateDto)
         {
             switch (player)
             {
-                case PlayerEnum.Player1:
-                    matchStateDto.Player1Score++;
+                case PlayerEnum.Left:
+                    matchStateDto.LeftPlayerScore++;
+                    if (IsTimeToSwitchServer(matchStateDto, PointOperation.Add))
+                    {
+                        SwitchCurrentServer(matchStateDto);
+                    }
                     break;
-                case PlayerEnum.Player2:
-                    matchStateDto.Player2Score++;
+                case PlayerEnum.Right:
+                    matchStateDto.RightPlayerScore++;
+                    if (IsTimeToSwitchServer(matchStateDto, PointOperation.Add))
+                    {
+                        SwitchCurrentServer(matchStateDto);
+                    }
                     break;
                 default:
                     break;
             }
-
-            if ((matchStateDto.Player1Score + matchStateDto.Player2Score) % 2 == 0)
-            {
-                SwitchCurrentServer(matchStateDto);
-            }
         }
 
-        private static void DecreasePlayerScore(PlayerEnum player, MatchStateDto matchStateDto)
+        private void DecreasePlayerScore(PlayerEnum player, MatchStateDto matchStateDto)
         {
             switch (player)
             {
-                case PlayerEnum.Player1:
-                    if (matchStateDto.Player1Score > 0)
+                case PlayerEnum.Left:
+                    if (matchStateDto.LeftPlayerScore > 0)
                     {
-                        matchStateDto.Player1Score--;
-                        if ((matchStateDto.Player1Score + matchStateDto.Player2Score) % 2 == 1)
+                        matchStateDto.LeftPlayerScore--;
+                        if (IsTimeToSwitchServer(matchStateDto, PointOperation.Subtract))
                         {
                             SwitchCurrentServer(matchStateDto);
                         }
                     }
 
                     break;
-                case PlayerEnum.Player2:
-                    if (matchStateDto.Player2Score > 0)
+                case PlayerEnum.Right:
+                    if (matchStateDto.RightPlayerScore > 0)
                     {
-                        matchStateDto.Player2Score--;
-                        if ((matchStateDto.Player1Score + matchStateDto.Player2Score) % 2 == 0)
+                        matchStateDto.RightPlayerScore--;
+                        if (IsTimeToSwitchServer(matchStateDto, PointOperation.Subtract))
                         {
                             SwitchCurrentServer(matchStateDto);
                         }
                     }
-
                     break;
                 default:
                     break;
             }
-
-
         }
 
-        public MatchStateDto SetPlayer1(PlayerDto player)
+        private bool IsTimeToSwitchServer(MatchStateDto matchStateDto, PointOperation operation)
+        {
+            var scoreComparer = operation == PointOperation.Add ? 0 : 1;
+            return (matchStateDto.LeftPlayerScore + matchStateDto.RightPlayerScore) % 2 == scoreComparer;
+        }
+
+        private bool IsFightForServe(MatchStateDto matchStateDto)
+        {
+            return matchStateDto.LeftPlayerScore == default &&
+                   matchStateDto.RightPlayerScore == default &&
+                   matchStateDto.FirstServer is null;
+        }
+
+        private void InitializeFirstServer(MatchStateDto matchStateDto, PlayerEnum player)
+        {
+            matchStateDto.FirstServer = player;
+            matchStateDto.CurrentServer = player;
+            matchStateDto.UpdatedAt = DateTime.UtcNow;
+        }
+
+        public MatchStateDto SetLeftPlayer(PlayerDto player)
         {
             var matchStateDto = matchStateManager.GetCurrentMatch();
-            matchStateDto.Player1 = player;
+            matchStateDto.LeftPlayer = player;
             return matchStateManager.SetMatchState(matchStateDto);
         }
 
-        public MatchStateDto SetPlayer2(PlayerDto player)
+        public MatchStateDto SetRightPlayer(PlayerDto player)
         {
             var matchStateDto = matchStateManager.GetCurrentMatch();
-            matchStateDto.Player2 = player;
+            matchStateDto.RightPlayer = player;
             return matchStateManager.SetMatchState(matchStateDto);
         }
 
         private static void SwitchCurrentServer(MatchStateDto matchStateDto)
         {
-            matchStateDto.CurrentServer = matchStateDto.CurrentServer == PlayerEnum.Player1 ? PlayerEnum.Player2 : PlayerEnum.Player1;
+            matchStateDto.CurrentServer = matchStateDto.CurrentServer == PlayerEnum.Left 
+                ? PlayerEnum.Right
+                : PlayerEnum.Left;
         }
     }
 }

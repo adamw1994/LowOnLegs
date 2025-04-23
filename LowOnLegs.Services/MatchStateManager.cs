@@ -17,12 +17,11 @@ namespace LowOnLegs.Services
 
         public MatchStateDto GetMatchState() => new MatchStateDto(_currentMatch);
 
-        public MatchStateDto StartMatch(PlayerDto? player1, PlayerDto? player2)
+        public MatchStateDto StartMatch(PlayerDto? leftPlayer, PlayerDto? rightPlayer)
         {
             lock (_lockObject)
             {
-                _currentMatch = new MatchState(player1, player2);
-
+                _currentMatch = new MatchState(leftPlayer, rightPlayer);
                 return new MatchStateDto(_currentMatch);
             }
         }
@@ -58,10 +57,10 @@ namespace LowOnLegs.Services
         {
             _currentMatch.FirstServer = dto.FirstServer;
             _currentMatch.CurrentServer = dto.CurrentServer;
-            _currentMatch.Player1Score = dto.Player1Score;
-            _currentMatch.Player2Score = dto.Player2Score;
-            _currentMatch.Player1 = dto.Player1;
-            _currentMatch.Player2 = dto.Player2;
+            _currentMatch.LeftPlayerScore = dto.LeftPlayerScore;
+            _currentMatch.RightPlayerScore = dto.RightPlayerScore;
+            _currentMatch.LeftPlayer = dto.LeftPlayer;
+            _currentMatch.RightPlayer = dto.RightPlayer;
             _currentMatch.StartTime = dto.StartTime;
             _currentMatch.CreatedAt = dto.CreatedAt;
             _currentMatch.UpdatedAt = dto.UpdatedAt;

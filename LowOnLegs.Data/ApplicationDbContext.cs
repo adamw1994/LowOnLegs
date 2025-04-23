@@ -46,15 +46,15 @@ namespace LowOnLegs.Data
                 entity.Property(e => e.UpdatedAt).IsRequired();
 
                 // Relacja Match -> Player1 (wiele do jednego)
-                entity.HasOne(m => m.Player1)
+                entity.HasOne(m => m.LeftPlayer)
                       .WithMany(p => p.Matches)
-                      .HasForeignKey(m => m.Player1Id)
+                      .HasForeignKey(m => m.LeftPlayerId)
                       .OnDelete(DeleteBehavior.Restrict);
 
                 // Relacja Match -> Player2 (wiele do jednego)
-                entity.HasOne(m => m.Player2)
+                entity.HasOne(m => m.RightPlayer)
                       .WithMany()
-                      .HasForeignKey(m => m.Player2Id)
+                      .HasForeignKey(m => m.RightPlayerId)
                       .OnDelete(DeleteBehavior.Restrict);
 
                 // Relacja Match -> Winner (wiele do jednego)

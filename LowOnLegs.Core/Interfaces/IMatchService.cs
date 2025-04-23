@@ -14,8 +14,8 @@ namespace LowOnLegs.Core.Interfaces
         MatchStateDto StartMatch(PlayerDto? player1 = null, PlayerDto? player2 = null);
         MatchStateDto AddPoint(PlayerEnum player);
         MatchStateDto SubtractPoint(PlayerEnum player);
-        MatchStateDto SetPlayer1(PlayerDto player);
-        MatchStateDto SetPlayer2(PlayerDto player);
+        MatchStateDto SetLeftPlayer(PlayerDto player);
+        MatchStateDto SetRightPlayer(PlayerDto player);
          MatchStateDto ResetMatch();
     }
 }

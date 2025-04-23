@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LowOnLegs.Core.Enums
 {
-    public enum PlayerEnum
+    public enum PointOperation
     {
-        Left = 1,
-        Right = 2
+        Add = 1,
+        Subtract = 2
     }
 }

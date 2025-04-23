@@ -12,10 +12,10 @@ namespace LowOnLegs.Core.DTOs
     public class MatchStateDto
     {
         public int MatchId { get; set; }
-        public PlayerDto? Player1 { get; set; }
-        public PlayerDto? Player2 { get; set; }
-        public int Player1Score { get; set; }
-        public int Player2Score { get; set; }
+        public PlayerDto? LeftPlayer { get; set; }
+        public PlayerDto? RightPlayer { get; set; }
+        public int LeftPlayerScore { get; set; }
+        public int RightPlayerScore { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
@@ -28,10 +28,10 @@ namespace LowOnLegs.Core.DTOs
         public MatchStateDto(MatchState matchState)
         {
             MatchId = matchState.MatchId;
-            Player1 = matchState.Player1;
-            Player2 = matchState.Player2;
-            Player1Score = matchState.Player1Score;
-            Player2Score = matchState.Player2Score;
+            LeftPlayer = matchState.LeftPlayer;
+            RightPlayer = matchState.RightPlayer;
+            LeftPlayerScore = matchState.LeftPlayerScore;
+            RightPlayerScore = matchState.RightPlayerScore;
             StartTime = matchState.StartTime;
             CreatedAt = matchState.CreatedAt;
             UpdatedAt = matchState.UpdatedAt;
@@ -44,29 +44,28 @@ namespace LowOnLegs.Core.DTOs
             var matchDto =  new MatchDto
             {
                 MatchId = matchStateDto.MatchId,
-                Player1 = matchStateDto.Player1,
-                Player2 = matchStateDto.Player2,
-                Player1Score = matchStateDto.Player1Score,
-                Player2Score = matchStateDto.Player2Score,
+                LeftPlayer = matchStateDto.LeftPlayer,
+                RightPlayer = matchStateDto.RightPlayer,
+                LeftPlayerScore = matchStateDto.LeftPlayerScore,
+                RightPlayerScore = matchStateDto.RightPlayerScore,
                 StartTime = matchStateDto.StartTime,
                 CreatedAt = matchStateDto.CreatedAt,
                 UpdatedAt = matchStateDto.UpdatedAt,
                 EndTime = DateTime.Now,
                 IsFinished = true,
-                SaveMatchToDatabase = matchStateDto.Player1 is not null && matchStateDto.Player2 is not null,
                 FirstServer = matchStateDto.FirstServer,
             };
 
             if (!matchDto.SaveMatchToDatabase)
                 return matchDto;
 
-            if (matchStateDto.Player1Score > matchStateDto.Player2Score)
+            if (matchStateDto.LeftPlayerScore > matchStateDto.RightPlayerScore)
             {
-                matchDto.WinnerId = matchStateDto.Player1?.Id;
+                matchDto.WinnerId = matchStateDto.LeftPlayer?.Id;
             }
-            else if (matchStateDto.Player1Score < matchStateDto.Player2Score)
+            else if (matchStateDto.LeftPlayerScore < matchStateDto.RightPlayerScore)
             {
-                matchDto.WinnerId = matchStateDto.Player2?.Id;
+                matchDto.WinnerId = matchStateDto.RightPlayer?.Id;
             }
             return matchDto;
         }

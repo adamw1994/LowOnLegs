@@ -45,59 +45,45 @@ namespace LowOnLegs.API.Controllers
             return await Task.FromResult(new JsonResult(matchStateDto));
         }
 
-        [HttpPost("add-point-player1")]
-        public async Task<IActionResult> AddPointPlayer1()
+        [HttpPost("add-point")]
+        public async Task<IActionResult> AddPoint(PlayerEnum player)
         {
-            var matchStateDto = _matchService.AddPoint(PlayerEnum.Player1);
-            //await _hub.Clients.All.SendAsync("UpdateScore", new
-            //{ player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
-            //);
+            var matchStateDto = _matchService.AddPoint(player);
+            await _hub.Clients.All.SendAsync("UpdateScore", new
+            {
+                leftPlayer = matchStateDto.LeftPlayerScore,
+                rightPlayer = matchStateDto.RightPlayerScore
+            });
             return await Task.FromResult(new JsonResult(matchStateDto));
         }
 
-        [HttpPost("subtract-point-player1")]
-        public async Task<IActionResult> SubtractPointPlayer1()
+        [HttpPost("subtract-point")]
+        public async Task<IActionResult> SubtractPoint(PlayerEnum player)
         {
-            var matchStateDto = _matchService.SubtractPoint(PlayerEnum.Player1);
-            //await _hub.Clients.All.SendAsync("UpdateScore", new
-            //{ player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
-            //);
+            var matchStateDto = _matchService.SubtractPoint(player);
+
+            await _hub.Clients.All.SendAsync("UpdateScore", new
+            {
+                leftPlayer = matchStateDto.LeftPlayerScore,
+                rightPlayer = matchStateDto.RightPlayerScore
+            });
+
             return await Task.FromResult(new JsonResult(matchStateDto));
         }
 
-        [HttpPost("add-point-player2")]
-        public async Task<IActionResult> AddPointPlayer2()
-        {
-            var matchStateDto = _matchService.AddPoint(PlayerEnum.Player2);
-            //await _hub.Clients.All.SendAsync("UpdateScore", new
-            //{ player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
-            //);
-            return await Task.FromResult(new JsonResult(matchStateDto));
-        }
-
-        [HttpPost("subtract-point-player2")]
-        public async Task<IActionResult> SubtractPointPlayer2()
-        {
-            var matchStateDto = _matchService.SubtractPoint(PlayerEnum.Player2);
-            //await _hub.Clients.All.SendAsync("UpdateScore", new
-            //{ player1 = matchStateDto.Player1Score, player2 = matchStateDto.Player2Score }
-            //);
-            return await Task.FromResult(new JsonResult(matchStateDto));
-        }
-
-        [HttpPost("set-player1/{playerId}")]
-        public async Task<IActionResult> SetPlayer1(int playerId)
+        [HttpPost("set-left-player/{playerId}")]
+        public async Task<IActionResult> SetLeftPlayer(int playerId)
         {
             var playerDto = _playerService.GetPlayer(playerId);
-            var matchStateDto = _matchService.SetPlayer1(playerDto);
+            var matchStateDto = _matchService.SetLeftPlayer(playerDto);
             return await Task.FromResult(new JsonResult(matchStateDto));
         }
 
-        [HttpPost("set-player2/{playerId}")]
-        public async Task<IActionResult> SetPlayer2(int playerId)
+        [HttpPost("set-right-player/{playerId}")]
+        public async Task<IActionResult> SetRightPlayer(int playerId)
         {
             var playerDto = _playerService.GetPlayer(playerId);
-            var matchStateDto = _matchService.SetPlayer2(playerDto);
+            var matchStateDto = _matchService.SetRightPlayer(playerDto);
             return await Task.FromResult(new JsonResult(matchStateDto));
         }
     }
