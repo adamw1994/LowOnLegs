@@ -1,0 +1,22 @@
+# JavaScript dependencies and generated output (all projects)
+node_modules/
+dist/
+dist-ssr/
+**/.angular/cache/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# .NET build output and Visual Studio local state
+[Bb]in/
+[Oo]bj/
+.vs/
+TestResults/
+*.user
+*.suo
+
+# Logs and machine-local files
+*.log
+.DS_Store
+Thumbs.db
+.claude/settings.local.json
