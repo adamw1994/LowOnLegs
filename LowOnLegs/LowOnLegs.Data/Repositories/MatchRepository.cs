@@ -13,18 +13,10 @@ namespace LowOnLegs.Data.Repositories
             _context = context;
         }
 
-        public async Task<bool> Add(Match match)
+        public async Task Add(Match match)
         {
-            try
-            {
-                await _context.Matches.AddAsync(match);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            await _context.Matches.AddAsync(match);
+            await _context.SaveChangesAsync();
         }
 
         public IEnumerable<Match> GetAll()

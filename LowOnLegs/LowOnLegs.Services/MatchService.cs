@@ -22,18 +22,19 @@ namespace LowOnLegs.Services
         public MatchStateDto StartMatch(PlayerDto? leftPlayer = null, PlayerDto? rightPlayer = null)
             => _matchStateManager.StartMatch(leftPlayer, rightPlayer);
 
-        public MatchStateDto FinishMatch()
+        public async Task<MatchStateDto> FinishMatch()
         {
             var state = _matchStateManager.GetCurrentMatch();
             var matchDto = state.ToMatchDto(state);
 
             if (matchDto.SaveMatchToDatabase)
             {
-                _matchRepository.Add(matchDto.ToEntity());
-                UpdateSinglesElo(state);
+                await _matchRepository.Add(matchDto.ToEntity());
+                await UpdateSinglesElo(state);
             }
-
-            return _matchStateManager.StartMatch(state.LeftPlayer, state.RightPlayer);
+            var leftPlayer = state.LeftPlayer is null ? null : _playerRepository.Get(state.LeftPlayer.Id);
+            var rightPlayer = state.RightPlayer is null ? null : _playerRepository.Get(state.RightPlayer.Id);
+            return _matchStateManager.StartMatch(leftPlayer, rightPlayer);
         }
 
         public MatchStateDto ResetMatch()
@@ -83,7 +84,7 @@ namespace LowOnLegs.Services
         public IEnumerable<MatchHistoryDto> GetMatchHistory()
             => _matchRepository.GetAll().Select(m => new MatchHistoryDto(m));
 
-        private void UpdateSinglesElo(MatchStateDto state)
+        private async Task UpdateSinglesElo(MatchStateDto state)
         {
             if (state.LeftPlayer is null || state.RightPlayer is null) return;
 
@@ -97,8 +98,8 @@ namespace LowOnLegs.Services
 
             var (newWinnerElo, newLoserElo) = EloService.Calculate(winnerDto.EloSingles, loserDto.EloSingles);
 
-            _playerRepository.UpdateElo(winnerId, newWinnerElo, winnerDto.EloDoubles);
-            _playerRepository.UpdateElo(loserId,  newLoserElo,  loserDto.EloDoubles);
+            await _playerRepository.UpdateElo(winnerId, newWinnerElo, winnerDto.EloDoubles);
+            await _playerRepository.UpdateElo(loserId,  newLoserElo,  loserDto.EloDoubles);
         }
 
         private void IncreasePlayerScore(PlayerEnum player, MatchStateDto s)

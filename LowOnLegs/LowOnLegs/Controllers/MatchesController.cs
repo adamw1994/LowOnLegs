@@ -29,7 +29,11 @@ namespace LowOnLegs.API.Controllers
         public IActionResult StartMatch() => Ok(_matchService.StartMatch());
 
         [HttpPost("finish")]
-        public IActionResult FinishMatch() => Ok(_matchService.FinishMatch());
+        public async Task<IActionResult> FinishMatch()
+        {
+            var state = await _matchService.FinishMatch();
+            return Ok(state);
+        }
 
         [HttpPost("reset")]
         public IActionResult ResetMatch() => Ok(_matchService.ResetMatch());

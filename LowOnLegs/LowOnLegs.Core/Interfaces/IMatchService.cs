@@ -6,7 +6,7 @@ namespace LowOnLegs.Core.Interfaces
     public interface IMatchService
     {
         MatchStateDto StartMatch(PlayerDto? player1 = null, PlayerDto? player2 = null);
-        MatchStateDto FinishMatch();
+        Task<MatchStateDto> FinishMatch();
         MatchStateDto ResetMatch();
         MatchStateDto AddPoint(PlayerEnum player);
         MatchStateDto SubtractPoint(PlayerEnum player);

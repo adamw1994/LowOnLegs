@@ -4,7 +4,7 @@ namespace LowOnLegs.Data.Repositories.Interfaces
 {
     public interface IMatchRepository
     {
-        Task<bool> Add(Match match);
+        Task Add(Match match);
         IEnumerable<Match> GetAll();
     }
 }

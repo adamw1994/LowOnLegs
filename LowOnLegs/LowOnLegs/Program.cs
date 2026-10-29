@@ -37,6 +37,7 @@ namespace LowOnLegs
                 });
             });
 
+
             builder.Services.AddSignalR();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -57,7 +58,10 @@ namespace LowOnLegs
             builder.Services.AddScoped<IMatchRepository, MatchRepository>();
             builder.Services.AddScoped<IDoubleMatchRepository, DoubleMatchRepository>();
 
+            builder.Services.AddProblemDetails();
             var app = builder.Build();
+            app.UseExceptionHandler();
+
 
             // Apply pending EF Core migrations automatically
             using (var scope = app.Services.CreateScope())
