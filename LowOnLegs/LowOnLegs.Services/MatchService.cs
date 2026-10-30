@@ -32,6 +32,7 @@ namespace LowOnLegs.Services
                 await _matchRepository.Add(matchDto.ToEntity());
                 await UpdateSinglesElo(state);
             }
+
             var leftPlayer = state.LeftPlayer is null ? null : _playerRepository.Get(state.LeftPlayer.Id);
             var rightPlayer = state.RightPlayer is null ? null : _playerRepository.Get(state.RightPlayer.Id);
             return _matchStateManager.StartMatch(leftPlayer, rightPlayer);

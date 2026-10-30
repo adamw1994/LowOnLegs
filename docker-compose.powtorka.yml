@@ -1,0 +1,13 @@
+services:
+  api:
+    image: lowonlegs-api
+    environment:
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Data Source=/app/data/LowOnLegsDb.db"
+    ports:
+      - "8090:8080"
+    volumes:
+      - powtorka_db:/app/data
+
+volumes:
+  powtorka_db:

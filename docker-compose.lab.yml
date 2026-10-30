@@ -1,0 +1,19 @@
+services:
+  api:
+    image: lowonlegs-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Data Source=/app/data/LowOnLegsDb.db"
+    volumes:
+      - lab_db:/app/data
+
+  frontend:
+    image: lowonlegs-frontend
+    ports:
+      - "8086:80"
+    depends_on:
+      - api
+
+volumes:
+  lab_db:
